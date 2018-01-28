@@ -1,4 +1,5 @@
 function showPage( /* arguments here for page number and student list */ ) {
+	
 	// first hide all students on the page
 
 	// Then loop through all students in our student list argument
