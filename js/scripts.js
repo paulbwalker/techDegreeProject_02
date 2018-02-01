@@ -1,13 +1,24 @@
-function showPage( /* arguments here for page number and student list */ ) {
-	
+
+	function showPage( /* arguments here for page number and student list */ ) {
+
 	// first hide all students on the page
+		$(".student-list").hide();
+		
+		
+		// Then loop through all students in our student list argument
+			const studentList = $(".student-item").each(function( i ){
+				const $studentArray = i + ": " + $( this ).html();
 
-	// Then loop through all students in our student list argument
+				// if student should be on this page number		
+				return $studentArray;
+			});
+					 				
+		 // show the student
+		 $( studentList ).parent().show();
+	}						 		
 
-		// if student should be on this page number
+showPage();
 
-			// show the student
-}
 
 function appendPageLinks( /*take a student list as an argument*/ ) {
 	// determine how many pages for this student list
@@ -56,6 +67,4 @@ function searchList() {
 			// ...call appendPageLinks with the matched students
 
 		// Call showPage to show first ten students of matched list
-
 	}
-}
