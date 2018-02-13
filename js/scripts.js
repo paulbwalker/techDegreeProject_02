@@ -1,44 +1,42 @@
+// This small function hides the tatal students then using the slice method to show the first 10 students.
+const showPage = ( pageNumber, studentList ) => {
+	// Hide full list of students
+	studentList.hide();
 
-	function showPage( /* arguments here for page number and student list */ ) {
+	// displays the right amount of students per page
+	studentList.slice( (( pageNumber - 1 ) * 10 ), ( pageNumber * 10 ) ).show(); 
 
-	// first hide all students on the page
-		$(".student-list").hide();
-		
-		
-		// Then loop through all students in our student list argument
-			const studentList = $(".student-item").each(function( i ){
-				const $studentArray = i + ": " + $( this ).html();
-
-				// if student should be on this page number		
-				return $studentArray;
-			});
-					 				
-		 // show the student
-		 $( studentList ).parent().show();
-	}						 		
-
-showPage();
+};
 
 
-function appendPageLinks( /*take a student list as an argument*/ ) {
-	// determine how many pages for this student list
+// This function takes the studentList as argument, and creates the linked page per 10 students
+	const appendPageLinks = ( studentList ) => {
+		// determine how many pages for this student list
+		const totalPage = Math.ceil( studentList.length / 10 );
+		// create a page link section
+		$('.page').append(`
+				<div class="pagination">
+					<ul></ul>
+				</div> 
+			`);
 
-	// create a page link section
+		// use a "for" loop through the divided totalPage variable.
+		for ( let i = 1; i <= totalPage; i++ ) {
+			// add a page link to the page link section append our new page link section to the site/
+			$('.pagination ul').append(`<li><a href="#"> ${i} </a></li>`);
+		}
 
-	// "for" every page
-
-		// add a page link to the page link section
-
-	// remove the old page link section from the site
-
-	// append our new page link section to the site
-
-	// define what happens when you click a link
-
-		// Use the showPage function to display the page for the link clicked
-
-		// mark that link as "active"
-}
+		// define what happens when you click a link
+		$('.pagination li a').on('click', function(event) {
+			event.preventDefault();
+			// Use the showPage function to display the page for the link clicked
+			showPage( event.target.text, $('li.student-item') );
+			// remove the old page link section by removeClass "active".
+			$('a').removeClass('active');
+			// mark that link as 'active'.
+			event.target.className = 'active';
+		});
+	};
 
 
 /* Exceeds Grade: The Search Function        *********************************/
@@ -66,5 +64,9 @@ function searchList() {
 
 			// ...call appendPageLinks with the matched students
 
-		// Call showPage to show first ten students of matched list
-	}
+		// Call showPage to show first ten students of matched 
+};
+	
+showPage( 1, $('li.student-item') );
+appendPageLinks( $('li.student-item') );
+searchList( $('li.student-item') );
