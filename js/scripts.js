@@ -53,28 +53,34 @@ const searchList = ( studentList ) => {
 
 	// Obtain the value of the search input
 	$('.student-search input').on('keyup', function() {
+		// Declare a variable for input
+		let $input = $(this).val();
 
-	});
-	// remove the previous page link section
+		// remove the previous page link section
+		$(studentList).hide();
 
-	// Loop over the student list, and for each student...
+		// Loop over the student list, and for each student...
+		$(studentList).each(function() {
+			// ...obtain the student's name... and the student's email
+			let $listName = $( $(this), '.student-detail h3').text();
 
-		// ...obtain the student's name...
-
-		// ...and the student's email...
-
-		// ...if the search value is found inside either email or name...
-
-			// ...add this student to list of "matched" student
-
-		// If there's no "matched" students...
-
-			// ...display a "no student's found" message
+			// ...if the search value is found inside either email or name...
+			if( $listName.search(new RegExp( $input, 'i')) < 0 ) {
+				// If there's no "matched" students...
+				$(this).hide();
+			} else {
+				// ...add this student to list of "matched" student
+				$(this).show();
+			}
+		});
+/* ...display a "no student's found" message ============================== */
 
 		// If over ten students were found...
 
 			// ...call appendPageLinks with the matched students
 
 		// Call showPage to show first ten students of matched 
+
+	});
 };
 searchList( $('li.student-item') );
