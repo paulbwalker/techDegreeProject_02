@@ -74,12 +74,19 @@ const searchList = ( studentList ) => {
 			}
 		});
 /* ...display a "no student's found" message ============================== */
+		// Assign student-list into a jQuery variable
+		let $students = $('.student-list');
 
-		// If over ten students were found...
-
-			// ...call appendPageLinks with the matched students
-
-		// Call showPage to show first ten students of matched 
+		// If there's no "matched" students...
+		if( $($students).children(':visible').length < 1 ) {
+			// append the message to the ".student-list"
+			$($students).append(`
+				<span class="alert">No student's found</span>
+				`).css({color: 'red', textAlign: 'center'});
+		} else {
+			// if input matches the ".student-list" remove span
+			$('.alert').remove();
+		}
 
 	});
 };
