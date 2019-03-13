@@ -6,6 +6,8 @@ By Paul B. Walker
 
 'use strict';
 
+// Global variables 
+const divPage = document.querySelector('div.page');
 const pageHeader = document.querySelector('div.page-header');
 const studentList = document.querySelectorAll('li');
 const linkDiv = document.querySelector('div.pagination');
@@ -26,13 +28,15 @@ const showPage = (page, students) => {
          studentList[i].style.display = 'none';
       }
    }
+   
 }
+
 
 
 // The appendPageLinks creates the div, ul and appends the html backticks
 // to create the rest of the html element. Added a class on the li if needed.
-const appendPageLinks = (page, students) => {
-   const divPage = document.querySelector('div.page');
+const appendPageLinks = () => {
+
    const linkDiv = document.createElement('div');
    const ulLink = document.createElement('ul');
    const numberOfLinks = Math.ceil(studentList.length / maxStudents);
@@ -68,59 +72,126 @@ const appendPageLinks = (page, students) => {
                                          : linkList[i].classList.remove('active');
       }
       // Binds the student list with the pageLinks by finding their index.
-      showPage(Array.from(pageLinks).indexOf(event.target), students, page);
+      showPage(Array.from(pageLinks).indexOf(event.target));  
    });
 }
 
-// The createForm function creates the input and button within the form field
+
+// studentSearch function has a lot of redundancy clean up in the future.
 const studentSearch = () => {
+
+   // Variables needed to create the input and button and append to page.
    const pageHeader = document.querySelector('div.page-header');
    const searchDiv = document.createElement('div');
    searchDiv.classList.add("student-search");
    pageHeader.appendChild(searchDiv);
-   const formField = `<input id="filter-input" type="text" placeholder="Search for students...">
+   const formHtml = `<input id="filter-input" type="text" placeholder="Search for students...">
                       <button>Search</button>`;
 
    // Append formField into the form element;
-   searchDiv.innerHTML = formField;
+   searchDiv.innerHTML = formHtml;
 
    // create local variables. 
-   const ul = document.querySelector('ul.student-list');
    const input = document.getElementById('filter-input');
    const button = document.querySelector('button');
 
-   // This function filter through the li element grabs the h3 content and
-   // filter the students name by their LI.
-   const filterNames = () => {
+   const filterNames = () => {  
       const filterValue = input.value.toLowerCase();
-      let li = ul.querySelectorAll('li.student-item');
+      let addPagination = document.querySelector('div.pagination ul');
+      let li = document.querySelectorAll('li.student-item');
+      let anchor = addPagination.querySelectorAll('li.link-list');
       const studentArray = [];
+      const counter = [];
+      let ul = anchor.parentNode;
+      const divNoMatch = document.createElement('div');
+      divPage.appendChild(divNoMatch);
+      divNoMatch.classList.add('no-match');
+      const para = document.createElement('p');
+      divNoMatch.appendChild(para);
 
+      // for loop to get student name and push into the studentArray
       for (let i = 0; i < li.length; i += 1) {
          let h3 = li[i].getElementsByTagName('h3')[0];
 
          if (h3.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
             li[i].style.display = '';
-            studentArray.push(li[i]);
+            studentArray.push(li[i]);           
          } else {
             li[i].style.display = 'none';
          }
       }
 
-      // The No Student Match Message goes into the UL. If I created a seperate Div
-      // I would have issues of removing the message 
-      if (studentArray.length === 0) {
-         ul.innerHTML = `<li>Sorry, No Students Match Your Search! Please reload browser to get the list.</li>`;
+      // Needed to create a different function for the search field.
+      const showArray = (searchPage, studentsArray) => {       
+         const firstPage = searchPage * maxStudents;
+         const lastStudents = firstPage + 9;
+      
+         for (let i = 0; i < studentArray.length; i += 1) {
+            if (i >= firstPage && i <= lastStudents) {
+               studentArray[i].style.display = 'block';
+            } else {
+               studentArray[i].style.display = 'none';
+            }
+         }    
+      }
+      showArray(0);
+      
+      let totalLink = Math.ceil(studentArray.length / 10);
+
+      for (let i = 0; i < totalLink; i += 1) {
+         counter.push(i);
+      }
+
+      // Get the counter array and map over the numbers(n).
+      const addOne = counter.map(n => n);
+
+      // Use template literals to create the li plus the anchor tags and assign it to items.
+      const items = addOne.map(n => `<li><a href="#">${n + 1}</a></li>`);
+
+      // Use the join method and assign it into ulPage. 
+      const ulPage = `<ul>${items.join('')}</ul>`;
+
+      // inserts into the UL html page.
+      addPagination.innerHTML = ulPage;
+ 
+      const oneDeep = addPagination.querySelector('ul>ul');
+
+      let oneDeepLi = oneDeep.querySelectorAll('li>a');
+
+      let anchorTag = oneDeepLi[0];
+
+      
+    
+      // This is to highlight the first page to show that is where the user is on.
+      if (anchorTag){ anchorTag.classList.add('active'); }
+     
+      if (studentArray.length === 0) { 
+         para.textContent = 'Sorry, your seach do not match the student list.';
+         input.style.display = 'none';
       } 
-   } 
+
+      oneDeep.addEventListener('click', (event) => {
+         const links = oneDeepLi; 
+         for (let i = 0; i < links.length; i += 1) {
+   
+            // used a ternary operator to decide to add or remove the active class.
+            (event.target === links[i]) ? links[i].classList.add('active') 
+                                        : links[i].classList.remove('active');
+         }
+         // Binds the student list with the pageLinks by finding their index.
+         showArray(Array.from(links).indexOf(event.target));  
+      });
+
+   }  
+
+
 
    // Event Listener for the Search Input.
    input.addEventListener('keyup', filterNames);
 
-   // When you click the button your remove the text input and No Match message.
    button.addEventListener('click', () => {
-      ul.innerHTML = '';
-      return input.value = '';
+      let buttonInput = input;
+      buttonInput.value = '';
    });
 
 }

@@ -117,3 +117,10 @@ body{
       background-color: #4ba6c3;
       color: #fff;
     }
+    
+    
+.no-match p {
+   font-size: 1.5rem;
+   text-align: center;
+   color: tomato;
+ }
